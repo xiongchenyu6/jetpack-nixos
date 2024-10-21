@@ -14,10 +14,12 @@ let
     inherit l4tVersion;
     inherit (prev) lib fetchurl fetchgit fvForEKB fvForSSK;
   };
+
+  uefi-firmware = prev.pkgsCross.aarch64-multiplatform.callPackage ./pkgs/uefi-firmware { inherit l4tVersion; };
 in
 {
   nvidia-jetpack = prev.lib.makeScope prev.newScope (self: ({
-    inherit jetpackVersion l4tVersion cudaVersion  fvForEKB fvForSSK;
+    inherit jetpackVersion l4tVersion cudaVersion  fvForEKB fvForSSK uefi-firmware;
     inherit (sourceInfo) debs gitRepos ;
 
     bspSrc = prev.runCommand "l4t-unpacked"
@@ -59,9 +61,6 @@ in
         '')
         self.gitRepos
     );
-
-    inherit (prev.pkgsCross.aarch64-multiplatform.callPackages ./pkgs/uefi-firmware { inherit (self) l4tVersion; })
-      edk2-jetson uefi-firmware;
 
     inherit (prev.callPackages ./pkgs/optee {
       # Nvidia's recommended toolchain is gcc9:
