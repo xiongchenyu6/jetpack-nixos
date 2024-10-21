@@ -173,7 +173,7 @@ let
     srcs = builtins.map (deb: deb.src) (debsForSourcePackage name);
   } // args);
 
-  nsight_compute_version = "2022.2.1";
+  nsight_compute_version = "2023.2.2";
   cudaPackages = {
     cuda_cccl = buildFromSourcePackage { name = "cuda-thrust"; };
     cuda_cudart = buildFromSourcePackage {
