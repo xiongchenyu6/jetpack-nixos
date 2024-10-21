@@ -18,7 +18,9 @@
   additionalDtbOverlays ? [ ]
 , kernel
 , flash-tools
-}:
+}@ args:
+
+builtins.trace "flash-script args: ${builtins.toJSON (builtins.removeAttrs args ["lib" "flash-tools"])}" null
 (''
   set -euo pipefail
 
