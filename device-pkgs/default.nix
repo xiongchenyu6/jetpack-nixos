@@ -54,7 +54,7 @@ let
       ${cfg.firmware.secureBoot.preSignCommands buildPackages}
 
       ${mkFlashScript nvidia-jetpack.flash-tools (args // {
-        kernel = kernel;
+        # kernel = kernel;
         flashArgs = [ "--no-root-check" "--no-flash" ] ++ (args.flashArgs or flashArgs);
       })}
 
@@ -74,7 +74,7 @@ let
 
   # Function to create RCM boot script
   mkRcmBootScript = { kernelPath, initrdPath, kernelCmdline }: mkFlashScriptAuto {
-    kernel = kernel;
+    # kernel = kernel;
     preFlashCommands = ''
       cp ${kernel}/Image kernel/Image
       cp ${initrdPath}/initrd bootloader/l4t_initrd.img
@@ -91,7 +91,7 @@ let
   # Generate the main flash script
   flashScript = writeShellApplication {
     name = "flash-${hostName}";
-    text = mkFlashScriptAuto { kernel = kernel; };
+    text = mkFlashScriptAuto { };
     meta.platforms = [ "x86_64-linux" ];
   };
 
@@ -110,7 +110,7 @@ let
   signedFirmware = runCommand "signed-${hostName}-${l4tVersion}" {
     inherit (cfg.firmware.secureBoot) requiredSystemFeatures;
   } (mkFlashScript nvidia-jetpack.flash-tools {
-    kernel = kernel;
+    # kernel = kernel;
     flashCommands = ''
       ${cfg.firmware.secureBoot.preSignCommands buildPackages}
     '' + lib.concatMapStringsSep "\n" (v: with v; ''
@@ -144,7 +144,7 @@ let
     name = "initrd-flash-${hostName}";
     text = ''
       ${mkRcmBootScript {
-        kernel = kernel;
+        # kernel = kernel;
         kernelPath = "${config.system.build.kernel}/${config.system.boot.loader.kernelFile}";
         initrdPath = let
           signedFirmwareInitrd = makeInitrd {
@@ -170,7 +170,7 @@ let
   fuseScript = writeShellApplication {
     name = "fuse-${hostName}";
     text = (import ./flash-script.nix) {
-      inherit lib kernel;
+      inherit lib;
       inherit (nvidia-jetpack) flash-tools;
       flashCommands = ''
         ./odmfuse.sh -i ${chipId} "$@" ${builtins.toString fuseArgs}
