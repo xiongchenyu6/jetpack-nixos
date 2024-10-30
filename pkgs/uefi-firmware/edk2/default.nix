@@ -100,11 +100,36 @@ let
 
       (lib.optionalString (trustedPublicCertPemFile != null) ./capsule-authentication.patch)
 
+      # TODO: Does not boot with edk2-uefi-dtb.patch
+      # TODO: Investigate if it is even needed?
+      # TODO: Error message
+      #
+      # EFI stub: Booting Linux Kernel...
+      # EFI stub: Loaded initrd from LINUX_EFI_INITRD_MEDIA_GUID device path
+      # EFI stub: Using DTB from configuration table
+      # EFI stub: Exiting boot services...
+      # ERROR:   **************************************
+      # ERROR:   RAS Uncorrectable Error in CCPMU, base=0xe001000:
+      # ERROR:          Status = 0xe4000504
+      # ERROR:   SERR = Assertion failure: 0x4
+      # ERROR:          IERR = uCode Error: 0x5
+      # ERROR:          MISC0 = 0x0
+      # ERROR:          MISC1 = 0x0
+      # ERROR:          MISC2 = 0x0
+      # ERROR:          MISC3 = 0x0
+      # ERROR:          ADDR = 0x60a5a5a5a5a5a5a5
+      # ERROR:   **************************************
+      # ERROO:    sei__dsspacc_eveet  rttunnd  -1
+      #                                          RROR:   Powering off core                                       
+      # ERROR:   ARI request timed out: req 34                                                                   
+      # ASSERT: plat/nvidia/tegra/soc/t234/drivers/mce/ari.c:154
+      #
+      #
       # Have UEFI use the device tree compiled into the firmware, instead of
       # using one from the kernel-dtb partition.
       # See: https://github.com/anduril/jetpack-nixos/pull/18
-      # Note: Patch ported to 36.3
-      ./edk2-uefi-dtb.patch
+      # Note: Attempted to port 36.3
+      #./edk2-uefi-dtb.patch
     ];
     postPatch = lib.optionalString errorLevelInfo ''
       sed -i 's#PcdDebugPrintErrorLevel|.*#PcdDebugPrintErrorLevel|0x8000004F#' Platform/NVIDIA/NVIDIA.common.dsc.inc
