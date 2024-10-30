@@ -218,7 +218,7 @@ in
           extraMakeFlags = mkOption {
             type = types.listOf types.str;
             default = [ 
-             "CFG_TEE_CORE_LOG_LEVEL=3"
+             # "CFG_TEE_CORE_LOG_LEVEL=3"
             ];
           };
 
